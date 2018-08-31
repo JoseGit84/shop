@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class CheckoutServiceTest {
 
@@ -23,9 +23,21 @@ public class CheckoutServiceTest {
     }
 
     @Test
-    public void testScanItemList_WithMoreThanOneItems() {
-        assertEquals(new BigDecimal("1.45"),
+    public void testScanItemList_WithMoreThanItem_And_NoApplicableOffer() {
+        assertEquals(new BigDecimal("0.85"),
+                checkoutService.checkoutItems(Arrays.asList("Apple", "Orange")));
+    }
+
+    @Test
+    public void testScanItemList_WithBuyOneTakeOneApple() {
+        assertEquals(new BigDecimal("0.85"),
                 checkoutService.checkoutItems(Arrays.asList("Apple", "Orange", "Apple")));
+    }
+
+    @Test
+    public void testScanItemList_WithBuyThreeTakeTwoOranges() {
+        assertEquals(new BigDecimal("1.10"),
+                checkoutService.checkoutItems(Arrays.asList("Orange", "Orange", "Apple", "Orange")));
     }
 
     @Test(expected = IllegalArgumentException.class)
