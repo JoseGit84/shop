@@ -48,14 +48,23 @@ public class CheckoutService {
         List<Offer> applicableOffers = new LinkedList<>();
         Map<String, Long> itemOccurrences = items.stream().collect(Collectors.groupingBy(item -> item, Collectors.counting()));
         for (Offer offer : offers) {
-            long itemAmount = itemOccurrences.getOrDefault(offer.getItem(), 0L);
-            if (itemAmount - offer.getTake() >= offer.getBuy()) {
+            while (isApplicable(offer, itemOccurrences)) {
+                long itemAmount = getItemQuantity(offer.getItem(), itemOccurrences);
                 applicableOffers.add(offer);
                 //update item counter
-                itemOccurrences.put(offer.getItem(), itemAmount - offer.getTake());
+                itemOccurrences.put(offer.getItem(), itemAmount - offer.getBuy() - offer.getTake());
             }
         }
         return applicableOffers;
+    }
+
+    private boolean isApplicable(Offer offer, Map<String, Long> itemOccurrences) {
+        long itemAmount = getItemQuantity(offer.getItem(), itemOccurrences);
+        return itemAmount - offer.getTake() >= offer.getBuy();
+    }
+
+    private Long getItemQuantity(String item, Map<String, Long> itemOccurrences) {
+        return itemOccurrences.getOrDefault(item, 0L);
     }
 
     /**

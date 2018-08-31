@@ -29,9 +29,15 @@ public class CheckoutServiceTest {
     }
 
     @Test
-    public void testScanItemList_WithBuyOneTakeOneApple() {
+    public void testScanItemList_WithBuyOneTakeOneApple_ApplicableOnce() {
         assertEquals(new BigDecimal("0.85"),
                 checkoutService.checkoutItems(Arrays.asList("Apple", "Orange", "Apple")));
+    }
+
+    @Test
+    public void testScanItemList_WithBuyOneTakeOneApple_ApplicableTwice() {
+        assertEquals(new BigDecimal("1.45"),
+                checkoutService.checkoutItems(Arrays.asList("Apple", "Orange", "Apple", "Apple", "Apple")));
     }
 
     @Test
